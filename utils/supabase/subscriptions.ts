@@ -1,6 +1,12 @@
 import { createServiceRoleClient } from "./service-role";
 import { CreemCustomer, CreemSubscription } from "@/types/creem";
 
+/**
+ * Creates or updates a customer record in the database based on a Creem customer object.
+ * @param {CreemCustomer} creemCustomer - The customer object from Creem.
+ * @param {string} userId - The user's unique ID from Supabase Auth.
+ * @returns {Promise<string>} The ID of the created or updated customer in the database.
+ */
 export async function createOrUpdateCustomer(
   creemCustomer: CreemCustomer,
   userId: string
@@ -49,6 +55,12 @@ export async function createOrUpdateCustomer(
   return newCustomer.id;
 }
 
+/**
+ * Creates or updates a subscription record in the database based on a Creem subscription object.
+ * @param {CreemSubscription} creemSubscription - The subscription object from Creem.
+ * @param {string} customerId - The internal customer ID.
+ * @returns {Promise<string>} The ID of the created or updated subscription.
+ */
 export async function createOrUpdateSubscription(
   creemSubscription: CreemSubscription,
   customerId: string
@@ -102,6 +114,11 @@ export async function createOrUpdateSubscription(
   return newSubscription.id;
 }
 
+/**
+ * Retrieves the active subscription for a given user.
+ * @param {string} userId - The user's unique ID.
+ * @returns {Promise<object | null>} The active subscription object or null if not found.
+ */
 export async function getUserSubscription(userId: string) {
   const supabase = createServiceRoleClient();
 
@@ -124,6 +141,14 @@ export async function getUserSubscription(userId: string) {
   return data;
 }
 
+/**
+ * Adds credits to a customer's account and records the transaction.
+ * @param {string} customerId - The internal customer ID.
+ * @param {number} credits - The number of credits to add.
+ * @param {string} [creemOrderId] - Optional Creem order ID for tracking.
+ * @param {string} [description] - Optional description for the transaction.
+ * @returns {Promise<number>} The new credit balance.
+ */
 export async function addCreditsToCustomer(
   customerId: string,
   credits: number,
@@ -138,8 +163,6 @@ export async function addCreditsToCustomer(
     .eq("id", customerId)
     .single();
   if (!client) throw new Error("Customer not found");
-  console.log("🚀 ~ 1client:", client);
-  console.log("🚀 ~ 1credits:", credits);
   const newCredits = (client.credits || 0) + credits;
 
   // Update customer credits
@@ -166,6 +189,13 @@ export async function addCreditsToCustomer(
   return newCredits;
 }
 
+/**
+ * Deducts credits from a customer's account and records the transaction.
+ * @param {string} customerId - The internal customer ID.
+ * @param {number} credits - The number of credits to use.
+ * @param {string} description - A description for the transaction (e.g., "Image generation").
+ * @returns {Promise<number>} The new credit balance.
+ */
 export async function useCredits(
   customerId: string,
   credits: number,
@@ -207,6 +237,11 @@ export async function useCredits(
   return newCredits;
 }
 
+/**
+ * Retrieves the current credit balance for a customer.
+ * @param {string} customerId - The internal customer ID.
+ * @returns {Promise<number>} The current credit balance.
+ */
 export async function getCustomerCredits(customerId: string) {
   const supabase = createServiceRoleClient();
 
@@ -220,6 +255,11 @@ export async function getCustomerCredits(customerId: string) {
   return data?.credits || 0;
 }
 
+/**
+ * Retrieves the credit transaction history for a customer.
+ * @param {string} customerId - The internal customer ID.
+ * @returns {Promise<Array<object>>} A list of credit history records.
+ */
 export async function getCreditsHistory(customerId: string) {
   const supabase = createServiceRoleClient();
 
