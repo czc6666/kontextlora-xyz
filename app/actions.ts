@@ -91,22 +91,22 @@ export async function generateImageAction(prevState: any, formData: FormData) {
   
   const inputs = validatedFields.data;
 
+  console.log(">>> [ACTION LOG] Attempting to generate image with inputs:", inputs);
+
   try {
     const response = await fetch("https://api.siliconflow.cn/v1/images/generations", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.SILICON_FLOW_API_KEY}`
+        'Authorization': `Bearer ${process.env.SILICONFLOW_API_KEY}`
       },
       body: JSON.stringify({
         prompt: inputs.prompt,
-        n: 4,
-        model: "black-forest-labs/FLUX.1-schnell",
-        width: inputs.width,
-        height: inputs.height,
+        model: "Kwai-Kolors/Kolors",
+        image_size: `${inputs.width}x${inputs.height}`,
+        batch_size: 1,
         num_inference_steps: inputs.steps,
         guidance_scale: inputs.cfg,
-        response_format: "b64_json",
       })
     });
     
@@ -117,7 +117,13 @@ export async function generateImageAction(prevState: any, formData: FormData) {
     }
 
     const result = await response.json();
-    const imageUrls = result.data.map((image: { b64_json: string; }) => `data:image/jpeg;base64,${image.b64_json}`);
+    
+    if (!result.images || result.images.length === 0) {
+      console.error("SiliconFlow API did not return image data:", result);
+      throw new Error("API returned a success status, but no image data was found.");
+    }
+
+    const imageUrls = result.images.map((image: { url: string; }) => image.url);
     
     return {
       message: "",
