@@ -1,15 +1,22 @@
-import { resetPasswordAction } from "@/app/actions";
-import { FormMessage, Message } from "@/components/form-message";
+"use client";
+
+import { useActionState } from "react";
+import { resetPasswordAction } from "@/app/(auth-pages)/actions";
+import { FormMessage } from "@/components/form-message";
 import { SubmitButton } from "@/components/submit-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export default async function ResetPassword(props: {
-  searchParams: Promise<Message>;
-}) {
-  const searchParams = await props.searchParams;
+const initialState = {
+  message: "",
+  type: undefined as "error" | "success" | undefined,
+};
+
+export default function ResetPassword() {
+  const [state, formAction] = useActionState(resetPasswordAction, initialState);
+  
   return (
-    <form className="flex flex-col w-full max-w-md p-4 gap-2 [&>input]:mb-4">
+    <form className="flex flex-col w-full max-w-md p-4 gap-2 [&>input]:mb-4" action={formAction}>
       <h1 className="text-2xl font-medium">Reset password</h1>
       <p className="text-sm text-foreground/60">
         Please enter your new password below.
@@ -28,10 +35,10 @@ export default async function ResetPassword(props: {
         placeholder="Confirm password"
         required
       />
-      <SubmitButton formAction={resetPasswordAction}>
+      <SubmitButton>
         Reset password
       </SubmitButton>
-      <FormMessage message={searchParams} />
+      <FormMessage message={state.message} type={state.type} />
     </form>
   );
 }

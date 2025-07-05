@@ -1,14 +1,21 @@
-import { forgotPasswordAction } from "@/app/actions";
-import { FormMessage, Message } from "@/components/form-message";
+"use client";
+
+import { useActionState } from "react";
+import { forgotPasswordAction } from "../actions";
+import { FormMessage } from "@/components/form-message";
 import { SubmitButton } from "@/components/submit-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 
-export default async function ForgotPassword(props: {
-  searchParams: Promise<Message>;
-}) {
-  const searchParams = await props.searchParams;
+const initialState = {
+  message: "",
+  type: undefined as "error" | "success" | undefined,
+};
+
+export default function ForgotPassword() {
+  const [state, formAction] = useActionState(forgotPasswordAction, initialState);
+
   return (
     <>
       <div className="flex flex-col space-y-2 text-center">
@@ -21,7 +28,7 @@ export default async function ForgotPassword(props: {
         </p>
       </div>
       <div className="grid gap-6">
-        <form className="grid gap-4">
+        <form className="grid gap-4" action={formAction}>
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -37,12 +44,11 @@ export default async function ForgotPassword(props: {
           </div>
           <SubmitButton
             className="w-full"
-            formAction={forgotPasswordAction}
             pendingText="Sending reset link..."
           >
             Send reset link
           </SubmitButton>
-          <FormMessage message={searchParams} />
+          <FormMessage message={state.message} type={state.type} />
         </form>
         <div className="text-sm text-muted-foreground text-center">
           Remember your password?{" "}
