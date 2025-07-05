@@ -8,7 +8,7 @@ export function Logo() {
       className="flex items-center gap-2 hover:opacity-90 transition-opacity"
     >
       <Code2 className="w-6 h-6" />
-      <span className="font-bold text-lg">Raphael Starter</span>
+      <span className="font-bold text-lg">Kontext Rola</span>
     </Link>
   );
 }

@@ -18,8 +18,8 @@ const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
-  title: "AI Generation Platform",
-  description: "Your next-gen AI image and content generation platform.",
+  title: "Kontext Lora - Professional Al generate Platform",
+  description: "The ultimate AI platform for images, videos & more. Create and edit with text prompts, or build your own AI models.",
 };
 
 export default async function RootLayout({

@@ -13,9 +13,9 @@ const faqs = [
   },
   {
     id: 3,
-    question: "Is this starter kit developer-friendly for beginners?",
+    question: "Is this platform developer-friendly for beginners?",
     answer:
-      "Absolutely! We've designed this kit with simplicity in mind. It includes comprehensive documentation, clean code structure, and follows best practices. Even if you're new to Next.js or React, you'll find it easy to understand and extend the codebase.",
+      "Absolutely! We've designed this platform with simplicity in mind. It includes comprehensive documentation, clean code structure, and follows best practices. Even if you're new to Next.js or React, you'll find it easy to understand and extend the codebase.",
   },
   {
     id: 4,
@@ -27,7 +27,7 @@ const faqs = [
     id: 5,
     question: "How do I manage subscriptions and billing?",
     answer:
-      "The starter kit includes a complete subscription management system. You can define different subscription tiers, manage billing cycles, and handle customer accounts through the admin dashboard. All payment processing is handled securely by Creem.io.",
+      "The platform includes a complete subscription management system. You can define different subscription tiers, manage billing cycles, and handle customer accounts through the admin dashboard. All payment processing is handled securely by Creem.io.",
   },
   {
     id: 6,

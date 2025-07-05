@@ -39,7 +39,7 @@ export default function Features() {
             Everything you need for worldwide business
           </p>
           <p className="mt-6 text-lg/8 text-muted-foreground">
-            Our starter kit provides all the essential tools to build applications that work globally. 
+            Our platform provides all the essential tools to build applications that work globally. 
             From authentication to payments, we've designed a solution that helps developers launch 
             faster with features that work across borders.
           </p>

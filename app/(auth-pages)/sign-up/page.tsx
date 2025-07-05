@@ -1,54 +1,34 @@
-import { signUp } from "@/app/actions";
-import { FormMessage, Message } from "@/components/form-message";
+"use client";
+
+import { signUp, signUpWithGoogle } from "@/app/(auth-pages)/actions";
+import { FormMessage } from "@/components/form-message";
 import { SubmitButton } from "@/components/submit-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { createClient } from "@/utils/supabase/server";
-import { encodedRedirect } from "@/utils/utils";
-import { redirect } from "next/navigation";
+import { useActionState } from "react";
 
-export default async function SignUp(props: {
-  searchParams: Promise<Message>;
-}) {
-  const searchParams = await props.searchParams;
+const initialState = {
+  message: "",
+  type: undefined as "error" | "success" | undefined,
+};
 
-  const signUpWithGoogle = async () => {
-    "use server";
-    const supabase = await createClient();
-    const origin = process.env.NEXT_PUBLIC_SITE_URL;
-
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${origin}/auth/callback`,
-        queryParams: {
-          access_type: "offline",
-          prompt: "consent",
-        },
-      },
-    });
-
-    if (error) {
-      return encodedRedirect("error", "/sign-up", error.message);
-    }
-
-    if (data.url) {
-      return redirect(data.url);
-    }
-  };
+export default function SignUp() {
+  const [state, formAction] = useActionState(signUp, initialState);
 
   return (
     <>
       <div className="flex flex-col space-y-2 text-center">
-        <h1 className="text-2xl font-semibold tracking-tight">Create your account</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">
+          Create your account
+        </h1>
         <p className="text-sm text-muted-foreground">
           Sign up to access global authentication and payment solutions
         </p>
       </div>
       <div className="grid gap-6">
-        <form className="grid gap-4">
+        <form className="grid gap-4" action={formAction}>
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -76,11 +56,10 @@ export default async function SignUp(props: {
           <SubmitButton
             className="w-full"
             pendingText="Creating account..."
-            formAction={signUp}
           >
             Create account
           </SubmitButton>
-          <FormMessage message={searchParams} />
+          <FormMessage message={state.message} type={state.type} />
         </form>
         <div className="relative">
           <div className="absolute inset-0 flex items-center">

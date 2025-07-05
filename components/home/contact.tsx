@@ -1,5 +1,7 @@
 'use client'
 
+import { Button } from "@/components/ui/button";
+
 export default function Contact() {
   return (
     <div id="contact" className="relative isolate bg-background px-6 py-24 sm:py-32 lg:px-8">
@@ -35,95 +37,18 @@ export default function Contact() {
           Have questions about implementation or need custom solutions? We're here to help developers worldwide.
         </p>
         <div className="mt-16 flex flex-col gap-16 sm:gap-y-20 lg:flex-row">
-          <form action="#" method="POST" className="lg:flex-auto">
-            <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
-              <div>
-                <label htmlFor="first-name" className="block text-sm/6 font-semibold text-foreground">
-                  First name
-                </label>
-                <div className="mt-2.5">
-                  <input
-                    id="first-name"
-                    name="first-name"
-                    type="text"
-                    autoComplete="given-name"
-                    className="block w-full rounded-md bg-background px-3.5 py-2 text-base text-foreground outline-1 -outline-offset-1 outline-border placeholder:text-muted-foreground/60 focus:outline-2 focus:-outline-offset-2 focus:outline-primary"
-                  />
-                </div>
-              </div>
-              <div>
-                <label htmlFor="last-name" className="block text-sm/6 font-semibold text-foreground">
-                  Last name
-                </label>
-                <div className="mt-2.5">
-                  <input
-                    id="last-name"
-                    name="last-name"
-                    type="text"
-                    autoComplete="family-name"
-                    className="block w-full rounded-md bg-background px-3.5 py-2 text-base text-foreground outline-1 -outline-offset-1 outline-border placeholder:text-muted-foreground/60 focus:outline-2 focus:-outline-offset-2 focus:outline-primary"
-                  />
-                </div>
-              </div>
-              <div>
-                <label htmlFor="email" className="block text-sm/6 font-semibold text-foreground">
-                  Email
-                </label>
-                <div className="mt-2.5">
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    className="block w-full rounded-md bg-background px-3.5 py-2 text-base text-foreground outline-1 -outline-offset-1 outline-border placeholder:text-muted-foreground/60 focus:outline-2 focus:-outline-offset-2 focus:outline-primary"
-                  />
-                </div>
-              </div>
-              <div>
-                <label htmlFor="company" className="block text-sm/6 font-semibold text-foreground">
-                  Company
-                </label>
-                <div className="mt-2.5">
-                  <input
-                    id="company"
-                    name="company"
-                    type="text"
-                    className="block w-full rounded-md bg-background px-3.5 py-2 text-base text-foreground outline-1 -outline-offset-1 outline-border placeholder:text-muted-foreground/60 focus:outline-2 focus:-outline-offset-2 focus:outline-primary"
-                  />
-                </div>
-              </div>
-              <div className="sm:col-span-2">
-                <label htmlFor="message" className="block text-sm/6 font-semibold text-foreground">
-                  Message
-                </label>
-                <div className="mt-2.5">
-                  <textarea
-                    id="message"
-                    name="message"
-                    rows={4}
-                    placeholder="Tell us about your project or questions"
-                    className="block w-full rounded-md bg-background px-3.5 py-2 text-base text-foreground outline-1 -outline-offset-1 outline-border placeholder:text-muted-foreground/60 focus:outline-2 focus:-outline-offset-2 focus:outline-primary"
-                    defaultValue={''}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="mt-10">
-              <button
-                type="submit"
-                className="block w-full rounded-md bg-primary px-3.5 py-2.5 text-center text-sm font-semibold text-primary-foreground shadow-xs hover:bg-primary/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary"
-              >
-                Send message
-              </button>
-            </div>
-            <p className="mt-4 text-sm/6 text-muted-foreground">
-              By submitting this form, I agree to the{' '}
-              <a href="#" className="font-semibold text-primary">
-                privacy&nbsp;policy
-              </a>
-              .
+          <div className="lg:flex-auto">
+            <p className="text-lg text-foreground">
+              For any questions or support requests, please reach out to us. We're happy to help!
             </p>
-          </form>
+            <div className="mt-6">
+                <Button asChild size="lg">
+                    <a href="mailto:support@kontextlora.xyz">
+                        Email us at support@kontextlora.xyz
+                    </a>
+                </Button>
+            </div>
+          </div>
           <div className="lg:mt-6 lg:w-80 lg:flex-none">
             <img
               alt="Raphael logo"
@@ -133,7 +58,7 @@ export default function Contact() {
             <figure className="mt-10">
               <blockquote className="text-lg/8 font-semibold text-foreground">
                 <p>
-                  "Raphael Starter Kit saved us months of development time. The global authentication and payment systems work flawlessly for our international customer base."
+                  "Kontext Rola saved us months of development time. The global authentication and payment systems work flawlessly for our international customer base."
                 </p>
               </blockquote>
               <figcaption className="mt-10 flex gap-x-6">

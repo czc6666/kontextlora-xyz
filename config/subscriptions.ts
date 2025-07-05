@@ -2,11 +2,10 @@ import { ProductTier } from "@/types/subscriptions";
 
 export const SUBSCRIPTION_TIERS: ProductTier[] = [
   {
-    name: "Starter",
-    id: "tier-hobby",
-    productId: "prod_AS6QpXxgflZRYNTZCIQ5C", // $11 monthly subscription
-    priceMonthly: "$11",
-    description: "Perfect for individual developers and small projects.",
+    id: "free-tier",
+    name: "Free",
+    priceMonthly: "$0",
+    description: "For personal use and exploration",
     features: [
       "Global authentication system",
       "Database integration",
@@ -16,18 +15,18 @@ export const SUBSCRIPTION_TIERS: ProductTier[] = [
       "Community forum access",
     ],
     featured: false,
-    discountCode: "", // Optional discount code
   },
   {
-    name: "Business",
-    id: "tier-pro",
-    productId: "prod_3KvkFFEiGGjnF4bgHBjl18", // $29 monthly subscription
-    priceMonthly: "$29",
-    description: "Ideal for growing businesses and development teams.",
+    id: "pro-tier",
+    name: "Pro",
+    priceMonthly: "$9.99",
+    description: "For professional users and small teams",
     features: [
-      "Everything in Starter",
-      "Multi-currency payments",
+      "Everything in Free",
       "Priority support",
+      "Access to premium models",
+      "Higher rate limits",
+      "Multi-currency payments",
       "Advanced analytics",
       "Custom branding options",
       "API usage dashboard",
@@ -42,7 +41,7 @@ export const SUBSCRIPTION_TIERS: ProductTier[] = [
     priceMonthly: "$99",
     description: "For large organizations with advanced requirements.",
     features: [
-      "Everything in Business",
+      "Everything in Pro",
       "Dedicated account manager",
       "Custom implementation support",
       "High-volume transaction processing",
@@ -56,15 +55,12 @@ export const SUBSCRIPTION_TIERS: ProductTier[] = [
 
 export const CREDITS_TIERS: ProductTier[] = [
   {
-    name: "Basic Package",
-    id: "tier-3-credits",
-    productId: "prod_MqcjVo0Bpx0rbYmHVlrh2", // $9 one-time purchase
-    priceMonthly: "$9",
-    description: "3 credits for testing and small-scale projects.",
-    creditAmount: 3,
+    id: "credits-tier-1",
+    name: "Free",
+    priceMonthly: "$0",
+    description: "For personal use and exploration",
+    creditAmount: 100,
     features: [
-      "3 credits for use across all features",
-      "No expiration date",
       "Access to standard features",
       "Community support"
     ],

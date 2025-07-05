@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Loader2, AlertCircle, PaintBucket, Download, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import type { HistoryItem } from "./history-item-type";
 
@@ -20,8 +20,22 @@ const handleDownload = (url: string, item: HistoryItem, index: number) => {
     document.body.removeChild(link);
 };
 
-function ResultItem({ item }: { item: HistoryItem }) {
+function ResultItem({ item, isHighlighted, onRender }: { item: HistoryItem, isHighlighted: boolean, onRender: (el: HTMLDivElement) => void }) {
+    const ref = useRef<HTMLDivElement>(null);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const numImages = Number(item.inputs?.numImages) || 1;
+
+    useEffect(() => {
+        if (ref.current) {
+            onRender(ref.current);
+        }
+    }, [onRender]);
+
+    useEffect(() => {
+        if (isHighlighted && ref.current) {
+            ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }, [isHighlighted]);
 
     if (item.status === 'error' && item.imageUrls.length === 0) {
         if (item.errors) return null; 
@@ -39,7 +53,7 @@ function ResultItem({ item }: { item: HistoryItem }) {
     if (item.status === 'loading' && item.imageUrls.length === 0) {
         return (
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                {Array.from({ length: 4 }).map((_, index) => (
+                {Array.from({ length: numImages }).map((_, index) => (
                     <div key={index} className="aspect-square bg-muted rounded-lg flex items-center justify-center animate-pulse">
                         <Loader2 className="h-8 w-8 text-muted-foreground animate-spin" />
                     </div>
@@ -81,7 +95,7 @@ function ResultItem({ item }: { item: HistoryItem }) {
     ));
 
     const loadingPlaceholders = item.status === 'loading' 
-        ? Array.from({ length: Math.max(0, 4 - item.imageUrls.length) }).map((_, index) => (
+        ? Array.from({ length: Math.max(0, numImages - item.imageUrls.length) }).map((_, index) => (
             <div key={`placeholder-${index}`} className="aspect-square bg-muted rounded-lg flex items-center justify-center animate-pulse">
                 <Loader2 className="h-8 w-8 text-muted-foreground animate-spin" />
             </div>
@@ -89,6 +103,7 @@ function ResultItem({ item }: { item: HistoryItem }) {
         : [];
 
     return (
+        <div ref={ref} className={`transition-all duration-500 ${isHighlighted ? 'ring-2 ring-primary ring-offset-4 ring-offset-background' : ''}`}>
             <Dialog open={!!selectedImage} onOpenChange={(isOpen) => !isOpen && handleClose()}>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     {imageElements}
@@ -124,10 +139,21 @@ function ResultItem({ item }: { item: HistoryItem }) {
                     )}
                 </DialogContent>
             </Dialog>
+        </div>
     )
 }
 
-export function GenerationResults({ history }: { history: HistoryItem[] }) {
+export function GenerationResults({ history, highlightedHistoryId }: { history: HistoryItem[], highlightedHistoryId: number | null }) {
+    const elementRefs = useRef(new Map<number, HTMLDivElement>());
+
+    const handleRender = (id: number, el: HTMLDivElement) => {
+        if (el) {
+            elementRefs.current.set(id, el);
+        } else {
+            elementRefs.current.delete(id);
+        }
+    };
+
   return (
     <div className="w-full bg-muted/40 rounded-lg p-4 min-h-[512px]">
         {history.length === 0 ? (
@@ -141,7 +167,12 @@ export function GenerationResults({ history }: { history: HistoryItem[] }) {
         ) : (
             <div className="space-y-8">
                 {history.map(item => {
-                  return <ResultItem key={item.id} item={item} />
+                  return <ResultItem 
+                            key={item.id} 
+                            item={item} 
+                            isHighlighted={item.id === highlightedHistoryId}
+                            onRender={(el) => handleRender(item.id, el)}
+                         />
                 })}
             </div>
         )}

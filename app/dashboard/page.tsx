@@ -3,6 +3,9 @@ import { redirect } from "next/navigation";
 import { SubscriptionStatusCard } from "@/components/dashboard/subscription-status-card";
 import { CreditsBalanceCard } from "@/components/dashboard/credits-balance-card";
 import { QuickActionsCard } from "@/components/dashboard/quick-actions-card";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { MoveRight } from "lucide-react";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -77,6 +80,25 @@ export default async function DashboardPage() {
               <p className="font-medium break-all">{user.id}</p>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Quick Navigation Section */}
+      <div className="rounded-xl border bg-card p-4 sm:p-6 mb-6">
+        <h2 className="font-bold text-lg sm:text-xl mb-4">Quick Navigation</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Button asChild variant="outline">
+            <Link href="/" className="flex items-center justify-between w-full">
+              Go to Home Page
+              <MoveRight className="w-4 h-4" />
+            </Link>
+          </Button>
+          <Button asChild>
+            <Link href="/image-generator" className="flex items-center justify-between w-full">
+              Start Creating
+              <MoveRight className="w-4 h-4" />
+            </Link>
+          </Button>
         </div>
       </div>
     </div>

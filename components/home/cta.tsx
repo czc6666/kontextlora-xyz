@@ -13,7 +13,7 @@ export default function CTA() {
             </h2>
             <p className="mt-4 text-sm sm:text-lg text-muted-foreground sm:mt-6">
               Join thousands of developers building modern web applications with
-              our starter kit. Get started for free and upgrade when you need
+              our platform. Get started for free and upgrade when you need
               to.
             </p>
             <div className="mt-6 flex flex-col sm:flex-row justify-center gap-4 sm:gap-6">
