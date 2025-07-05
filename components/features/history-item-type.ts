@@ -16,7 +16,20 @@ type ActionResult = {
 }
 
 // This is the type for our client-side history state
-export interface HistoryItem extends ActionResult {
+export interface HistoryItem {
   id: number;
   status: 'loading' | 'success' | 'error';
+  message: string;
+  errors: {
+      [key: string]: string[] | undefined;
+      prompt?: string[];
+      width?: string[];
+      height?: string[];
+      steps?: string[];
+      cfg?: string[];
+  } | null;
+  imageUrls: string[];
+  inputs: {
+      [key: string]: any;
+  } | null;
 } 

@@ -65,7 +65,7 @@ export async function generateImageAction(prevState: any, formData: FormData) {
     return {
       message: "Action Error: 请先登录后再进行操作。",
       errors: null,
-      imageUrls: null,
+      imageUrl: null,
       inputs: Object.fromEntries(formData.entries()),
     };
   }
@@ -84,7 +84,7 @@ export async function generateImageAction(prevState: any, formData: FormData) {
     return {
       message: "Validation Error",
       errors: validatedFields.error.flatten().fieldErrors,
-      imageUrls: null,
+      imageUrl: null,
       inputs: rawInputs,
     };
   }
@@ -109,7 +109,7 @@ export async function generateImageAction(prevState: any, formData: FormData) {
         guidance_scale: inputs.cfg,
       })
     });
-    
+
     if (!response.ok) {
       const errorText = await response.text();
       console.error("SiliconFlow API Error:", errorText);
@@ -117,18 +117,15 @@ export async function generateImageAction(prevState: any, formData: FormData) {
     }
 
     const result = await response.json();
-    
-    if (!result.images || result.images.length === 0) {
-      console.error("SiliconFlow API did not return image data:", result);
-      throw new Error("API returned a success status, but no image data was found.");
+    if (!result.images || result.images.length === 0 || !result.images[0].url) {
+      console.error("SiliconFlow API did not return a valid image:", result);
+      throw new Error("API did not return a valid image.");
     }
-
-    const imageUrls = result.images.map((image: { url: string; }) => image.url);
     
     return {
       message: "",
       errors: null,
-      imageUrls: imageUrls,
+      imageUrl: result.images[0].url,
       inputs: inputs,
     };
 
@@ -138,7 +135,7 @@ export async function generateImageAction(prevState: any, formData: FormData) {
     return {
       message: `Action Error: ${errorMessage}`,
       errors: null,
-      imageUrls: null,
+      imageUrl: null,
       inputs: inputs,
     };
   }

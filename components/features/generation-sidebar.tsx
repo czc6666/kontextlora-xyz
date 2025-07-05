@@ -81,24 +81,22 @@ export function GenerationSidebar({
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="width">宽度</Label>
-              <Input id="width" type="number" name="width" value={width} onChange={(e) => setWidth(parseInt(e.target.value))} />
+              <Input id="width" type="number" value={width} onChange={(e) => setWidth(parseInt(e.target.value))} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="height">高度</Label>
-              <Input id="height" type="number" name="height" value={height} onChange={(e) => setHeight(parseInt(e.target.value))} />
+              <Input id="height" type="number" value={height} onChange={(e) => setHeight(parseInt(e.target.value))} />
             </div>
-          </div>
-          <div className="space-y-2">
-            <Label>生成步数: {steps}</Label>
-            <Slider name="steps" value={[steps]} onValueChange={(v: number[]) => setSteps(v[0])} max={50} step={1} />
-          </div>
-          <div className="space-y-2">
-            <Label>引导强度 (CFG): {cfg}</Label>
-            <Slider name="cfg" value={[cfg]} onValueChange={(v: number[]) => setCfg(v[0])} max={15} step={0.5} />
           </div>
         </CollapsibleContent>
       </Collapsible>
       
+      {/* Ensure all parameters are always submitted regardless of collapsible state */}
+      <input type="hidden" name="width" value={width} />
+      <input type="hidden" name="height" value={height} />
+      <input type="hidden" name="steps" value={steps} />
+      <input type="hidden" name="cfg" value={cfg} />
+
       <SubmitButton isPending={isPending} />
     </div>
   );
