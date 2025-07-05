@@ -55,6 +55,43 @@ export const signOutAction = async () => {
   return redirect("/");
 };
 
+export async function forgotPasswordAction(prevState: any, formData: FormData) {
+    const supabase = await createClient();
+    const origin = headers().get('origin');
+    const email = formData.get('email') as string;
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${origin}/dashboard/reset-password`,
+    });
+
+    if (error) {
+        console.error('Error sending password reset email:', error);
+        return {
+            message: 'Error: Could not send password reset email.',
+        };
+    }
+
+    return {
+        message: 'Password reset email sent. Check your inbox.',
+    };
+}
+
+export async function resetPasswordAction(prevState: any, formData: FormData) {
+    const supabase = await createClient();
+    const password = formData.get('password') as string;
+
+    const { error } = await supabase.auth.updateUser({ password });
+
+    if (error) {
+        console.error('Error updating password:', error);
+        return {
+            message: 'Error: Could not update password.',
+        };
+    }
+
+    return redirect('/dashboard');
+}
+
 // ------------------- 文生图 Server Action -------------------
 
 export async function generateImageAction(prevState: any, formData: FormData) {

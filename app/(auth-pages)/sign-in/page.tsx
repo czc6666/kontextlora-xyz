@@ -10,11 +10,13 @@ import { encodedRedirect } from "@/utils/utils";
 import { redirect } from "next/navigation";
 import { AlertCircle } from "lucide-react";
 
-export default async function Login({
-  searchParams,
-}: {
-  searchParams: { message: string };
-}) {
+type SignInPageProps = {
+  searchParams: {
+    message: string;
+  };
+};
+
+export default function SignInPage({ searchParams }: SignInPageProps) {
   const signInWithGoogle = async () => {
     "use server";
     const supabase = await createClient();

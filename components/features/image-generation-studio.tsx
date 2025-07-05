@@ -12,7 +12,8 @@ export function ImageGenerationStudio() {
 
   const handleGenerate = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if(isPending) return;
+    if (isPending) return;
+    
     setIsPending(true);
 
     const formData = new FormData(event.currentTarget);
