@@ -27,7 +27,7 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import type { HistoryItem } from "@/components/features/history-item-type";
+import type { HistoryItem } from "./history-item-type";
 import HistoryPanel from "./history-panel";
 import { Wand2, Dices, Image as ImageIcon, Crown } from "lucide-react";
 import PromptToolbar from "./prompt-toolbar";

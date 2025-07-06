@@ -20,6 +20,18 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: 'https',
+        hostname: 'placehold.co',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'fal.media',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
   typescript: {
@@ -29,6 +41,7 @@ const nextConfig: NextConfig = {
     // !! WARN !!
     ignoreBuildErrors: true,
   },
+  serverExternalPackages: ['@acme/db'],
 };
 
 export default nextConfig;

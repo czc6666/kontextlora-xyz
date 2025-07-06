@@ -1,20 +1,18 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { GenerateForm } from "@/components/features/generate-form";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { BarChart, Bot, Code, PaintBucket } from "lucide-react";
-import { ImageGenerationStudio } from "@/components/features/image-generation-studio";
-import ControlPanel from "@/components/generation/control-panel";
-import ResultPanel from "@/components/generation/result-panel";
-import type { HistoryItem } from "@/components/features/history-item-type";
+import ControlPanel from "@/components/tools/image-generator/control-panel";
+import ResultPanel from "@/components/tools/image-generator/history-panel";
+import type { HistoryItem } from "@/components/tools/image-generator/history-item-type";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
-import { getUserStatus } from "@/app/image-generator/actions";
+import { getUserStatus } from "@/app/tools/image-generator/actions";
 
 const CheckIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
