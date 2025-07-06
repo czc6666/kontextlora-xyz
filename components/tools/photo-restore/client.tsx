@@ -11,7 +11,7 @@ import { ImageUploadArea } from "@/components/shared/image-upload-area";
 import { cn } from "@/lib/utils";
 import { Toggle } from "@/components/ui/toggle";
 import { ArrowRight, Loader, Sparkles } from "lucide-react";
-import { restorePhotoAction } from "@/app/tools/photo-restore/actions";
+import { restorePhotoAction } from "@/app/tools/free/photo-restore/actions";
 
 // Helper function to find the closest aspect ratio
 const supportedRatios = {

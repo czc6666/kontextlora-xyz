@@ -5,8 +5,9 @@ import { ThemeProvider } from "@/components/theme-provider";
 import Header from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Toaster } from "@/components/ui/toaster";
-import { createClient } from "@/utils/supabase/server";
 import { CursorFollower } from "@/components/ui/cursor-follower";
+import { GeistSans } from "geist/font/sans";
+import { cookies } from "next/headers";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -56,11 +57,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} font-sans`}>
@@ -73,7 +69,7 @@ export default async function RootLayout({
           <div className="hidden md:block">
             <CursorFollower />
           </div>
-          <Header user={user} />
+          <Header />
           <main className="min-h-screen">{children}</main>
           <Footer />
           <Toaster />

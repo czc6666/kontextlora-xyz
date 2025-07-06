@@ -1,3 +1,4 @@
+import Image from "next/image";
 import ImageFiltererClient from './client';
 import {
     Accordion,
@@ -5,12 +6,6 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion"
-import {
-  PageHeader,
-  PageHeaderDescription,
-  PageHeaderHeading,
-} from "@/components/shared/page-header";
-import { Shell } from "@/components/shared/shell";
 
 export const metadata = {
     title: 'Online Image Filters - Add Effects to Photos for Free',
@@ -46,18 +41,18 @@ const faqs = [
 
 const Page = () => {
     return (
-        <Shell>
-            <PageHeader className="items-center text-center">
-                <PageHeaderHeading>Online Image Filters</PageHeaderHeading>
-                <PageHeaderDescription>
-                    Apply artistic filters to your photos for free, such as grayscale, sepia, brightness, and blur.
-                </PageHeaderDescription>
-            </PageHeader>
+        <div className="container mx-auto px-4 py-12 md:px-6">
+            <header className="text-center mb-12">
+                <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-3">Online Image Filters</h1>
+                <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Apply artistic filters to your photos for free, such as grayscale, sepia, brightness, and blur.</p>
+            </header>
+            
             <div className="w-full max-w-xl mx-auto">
                 <ImageFiltererClient />
             </div>
-            <div className="mt-8 w-full max-w-3xl mx-auto">
-                <h2 className="text-2xl font-bold mb-4 text-center">Frequently Asked Questions</h2>
+            
+            <section className="mt-16 max-w-3xl mx-auto">
+                <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center">Frequently Asked Questions</h2>
                 <Accordion type="single" collapsible className="w-full">
                     {faqs.map((faq, index) => (
                     <AccordionItem value={`item-${index}`} key={index}>
@@ -68,8 +63,8 @@ const Page = () => {
                     </AccordionItem>
                     ))}
                 </Accordion>
-            </div>
-        </Shell>
+            </section>
+        </div>
     );
 };
 

@@ -1,7 +1,7 @@
 "use client";
 
-import { GenerationResults } from "@/components/features/generation-results";
-import type { HistoryItem } from "@/components/features/history-item-type";
+import { GenerationResults } from "./generation-results";
+import type { HistoryItem } from "./history-item-type";
 
 interface ResultPanelProps {
   history: HistoryItem[];

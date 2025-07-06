@@ -1,13 +1,15 @@
 "use client";
 
-import type { HistoryItem } from "@/components/features/history-item-type";
+import type { HistoryItem } from "./history-item-type";
+import { cn } from "@/lib/utils";
 
 interface HistoryPanelProps {
   history: HistoryItem[];
+  highlightedHistoryId: number | null;
   onSelectHistory: (item: HistoryItem) => void;
 }
 
-export default function HistoryPanel({ history, onSelectHistory }: HistoryPanelProps) {
+export function HistoryPanel({ history, highlightedHistoryId, onSelectHistory }: HistoryPanelProps) {
   if (history.length === 0) {
     return null; // Don't show anything if there's no history
   }
@@ -21,7 +23,10 @@ export default function HistoryPanel({ history, onSelectHistory }: HistoryPanelP
             key={item.id}
             type="button"
             onClick={() => onSelectHistory(item)}
-            className="w-full text-left p-2 rounded-lg hover:bg-muted transition-colors flex items-center gap-4"
+            className={cn(
+              "w-full text-left p-2 rounded-lg hover:bg-muted transition-colors flex items-center gap-4",
+              item.id === highlightedHistoryId && "bg-muted"
+            )}
           >
             {item.imageUrls.length > 0 ? (
               <img

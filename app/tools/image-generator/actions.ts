@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/utils/supabase/server";
+import { cookies } from "next/headers";
 import { z } from "zod";
 import { generateSchema } from "@/lib/schemas";
 
@@ -14,7 +15,8 @@ const models = [
 ];
 
 export async function getUserStatus() {
-  const supabase = await createClient();
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
@@ -40,7 +42,8 @@ export async function getUserStatus() {
 }
 
 export async function generateImageAction(prevState: any, formData: FormData) {
-  const supabase = await createClient();
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {

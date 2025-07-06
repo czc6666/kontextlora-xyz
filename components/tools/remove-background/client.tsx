@@ -10,7 +10,7 @@ import { BeforeAfterSlider, BeforeAfterImage } from "@/components/ui/before-afte
 import { Button } from "@/components/ui/button";
 import { ImageUploadArea } from "@/components/shared/image-upload-area";
 import { cn } from "@/lib/utils";
-import { removeBackgroundAction } from "@/app/tools/remove-background/actions";
+import { removeBackgroundAction } from "@/app/tools/free/remove-background/actions";
 
 const initialState = {
   message: "",

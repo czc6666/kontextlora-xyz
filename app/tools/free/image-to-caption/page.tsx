@@ -1,4 +1,4 @@
-import { ImageToCaptionClient } from "@/components/tools/image-to-caption/client";
+import { ImageToCaptionClient } from "./client";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 const faqData = [

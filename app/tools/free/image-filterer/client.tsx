@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, DragEvent, ChangeEvent, useEffect } from 'react';
+import { useState, useRef, DragEvent, ChangeEvent, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { UploadCloud, Download, RotateCw, RefreshCcw } from 'lucide-react';
@@ -27,15 +27,46 @@ const ImageFiltererClient = () => {
 
     const fileInputRef = useRef<HTMLInputElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const imageRef = useRef<HTMLImageElement>(new Image());
+    const imageRef = useRef<HTMLImageElement | null>(null);
+
+    const applyFilters = useCallback(() => {
+        const canvas = canvasRef.current;
+        const image = imageRef.current;
+        if (!canvas || !image?.src) return;
+        
+        const ctx = canvas.getContext('2d');
+        if(!ctx) return;
+
+        canvas.width = image.naturalWidth;
+        canvas.height = image.naturalHeight;
+
+        const filterString = `
+            grayscale(${filters.grayscale}%) 
+            sepia(${filters.sepia}%) 
+            saturate(${filters.saturate}%) 
+            brightness(${filters.brightness}%) 
+            contrast(${filters.contrast}%) 
+            blur(${filters.blur}px)
+        `.trim();
+
+        ctx.filter = filterString;
+        ctx.drawImage(image, 0, 0);
+    }, [filters]);
 
     useEffect(() => {
         if (preview) {
-            const image = imageRef.current;
-            image.onload = () => applyFilters();
+            const image = new Image();
+            image.onload = () => {
+                imageRef.current = image;
+                applyFilters();
+            }
             image.src = preview;
         }
-    }, [preview, filters]);
+    }, [preview]);
+
+    useEffect(() => {
+        applyFilters();
+    }, [applyFilters]);
 
     const handleFile = (inputFile: File) => {
         if (!inputFile.type.startsWith('image/')) {
@@ -55,30 +86,6 @@ const ImageFiltererClient = () => {
         reader.readAsDataURL(inputFile);
     };
 
-    const applyFilters = () => {
-        const canvas = canvasRef.current;
-        const image = imageRef.current;
-        if (!canvas || !image.src) return;
-        
-        const ctx = canvas.getContext('2d');
-        if(!ctx) return;
-
-        canvas.width = image.naturalWidth;
-        canvas.height = image.naturalHeight;
-
-        const filterString = `
-            grayscale(${filters.grayscale}%) 
-            sepia(${filters.sepia}%) 
-            saturate(${filters.saturate}%) 
-            brightness(${filters.brightness}%) 
-            contrast(${filters.contrast}%) 
-            blur(${filters.blur}px)
-        `.trim();
-
-        ctx.filter = filterString;
-        ctx.drawImage(image, 0, 0);
-    };
-    
     const handleSliderChange = (name: FilterKeys, value: number) => {
         setFilters(prev => ({ ...prev, [name]: value }));
     };

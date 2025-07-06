@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
-import TextareaAutosize from 'react-textarea-autosize';
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -18,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Accordion,
   AccordionContent,
@@ -28,10 +28,9 @@ import { Slider } from "@/components/ui/slider";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import type { HistoryItem } from "./history-item-type";
-import HistoryPanel from "./history-panel";
 import { Wand2, Dices, Image as ImageIcon, Crown } from "lucide-react";
 import PromptToolbar from "./prompt-toolbar";
-import { Skeleton } from "@/components/ui/skeleton";
+import type { User } from "@supabase/supabase-js";
 
 const models = [
   { id: "Kwai-Kolors/Kolors", name: "FLUX.1-schnell", access: ["free"] },
@@ -58,52 +57,25 @@ const randomPrompts = [
 ];
 
 interface ControlPanelProps {
+  user: User | null;
   isPending: boolean;
-  setHistory: React.Dispatch<React.SetStateAction<HistoryItem[]>>;
-  setIsPending: React.Dispatch<React.SetStateAction<boolean>>;
-  lastSuccessfulInputs: Record<string, any> | null;
-  errors: Record<string, string[] | undefined> | null;
-  history: HistoryItem[];
-  setHighlightedHistoryId: (id: number | null) => void;
+  onSubmit: (data: z.infer<typeof generateSchema>) => Promise<void>;
   isPro: boolean;
   credits: number;
-  isStatusLoading: boolean;
 }
 
-const ControlPanelSkeleton = () => (
-  <div className="space-y-6">
-    <div className="space-y-2">
-      <Skeleton className="h-4 w-1/4" />
-      <Skeleton className="h-10 w-full" />
-    </div>
-    <div className="space-y-2">
-      <Skeleton className="h-4 w-1/4" />
-      <Skeleton className="h-20 w-full" />
-    </div>
-    <div className="space-y-2">
-      <Skeleton className="h-4 w-1/4" />
-      <Skeleton className="h-10 w-full" />
-    </div>
-    <Skeleton className="h-12 w-full" />
-  </div>
-);
-
-export default function ControlPanel({
+export function ControlPanel({
+  user,
   isPending,
-  setHistory,
-  setIsPending,
-  lastSuccessfulInputs,
-  errors,
-  history,
-  setHighlightedHistoryId,
+  onSubmit,
   isPro,
   credits,
-  isStatusLoading,
 }: ControlPanelProps) {
-  const { form, onSubmit } =
-    useGenerationForm({ setHistory, setIsPending });
+  const form = useGenerationForm();
+  const { register, control, setValue, getValues, formState, watch } = form;
+  const { errors } = formState;
 
-  const { register, control, setValue, getValues, formState: { dirtyFields }, watch } = form;
+  const handleSubmit = form.handleSubmit(onSubmit);
   
   const {
     state: prompt,
@@ -113,33 +85,22 @@ export default function ControlPanel({
     clearHistory: clearPrompt,
     canUndo: canUndoPrompt,
     canRedo: canRedoPrompt,
-  } = useHistoryState(lastSuccessfulInputs?.prompt ?? "");
+  } = useHistoryState("");
 
   useEffect(() => {
-    // Sync the local prompt state (from useHistoryState) with the form state
     setValue("prompt", prompt, { shouldDirty: true });
   }, [prompt, setValue]);
 
-  // Watch form values
   const numImages = watch("num_images", 1);
   const steps = watch("steps", 20);
   const cfg = watch("cfg", 4.5);
   const width = watch("width", 1024);
   const height = watch("height", 1024);
-  const selectedAspectRatioLabel = aspectRatios.find(r => r.width === width && r.height === height)?.label || "Custom";
   
   const handleRandomPrompt = () => {
     const randomPrompt = randomPrompts[Math.floor(Math.random() * randomPrompts.length)];
     setValue("prompt", randomPrompt, { shouldDirty: true });
     setPrompt(randomPrompt);
-  };
-
-  const handleSelectHistory = (item: HistoryItem) => {
-    const newPrompt = String(item.inputs?.prompt || "");
-    setPrompt(newPrompt);
-    setValue('prompt', newPrompt, { shouldDirty: true });
-    setHighlightedHistoryId(item.id);
-    setTimeout(() => setHighlightedHistoryId(null), 1000);
   };
 
   const selectedModelId = watch("model", models[0].id);
@@ -150,30 +111,17 @@ export default function ControlPanel({
 
   if (selectedModel && !selectedModel.access.includes("free")) {
     if (isPro) {
-      buttonSubText = "Pro 用户不消耗积分";
+      buttonSubText = "Pro user, no credits cost";
     } else {
       const cost = selectedModel.creditCost ?? 0;
       const totalCost = cost * numImages;
-      buttonMainText = `Generate (${totalCost} 积分)`;
+      buttonMainText = `Generate (${totalCost} credits)`;
     }
-  }
-
-  const handleApplyLastSettings = () => {
-    if (lastSuccessfulInputs) {
-      Object.keys(lastSuccessfulInputs).forEach(key => {
-        setValue(key as any, lastSuccessfulInputs[key], { shouldDirty: true });
-      });
-      setPrompt(lastSuccessfulInputs.prompt);
-    }
-  };
-
-  if (isStatusLoading) {
-    return <ControlPanelSkeleton />;
   }
 
   return (
     <div className="flex flex-col h-full">
-      <form onSubmit={onSubmit} className="space-y-6 flex-grow">
+      <form onSubmit={handleSubmit} className="space-y-6 flex-grow">
         <div>
           <Label htmlFor="model">Model</Label>
           <Select name="model" defaultValue={models[0].id} onValueChange={(value) => setValue('model', value)}>
@@ -195,7 +143,7 @@ export default function ControlPanel({
                 if (isFreeModel) {
                   badge = { text: 'Free', style: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' };
                 } else {
-                  badge = { text: 'Pro / 积分', style: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' };
+                  badge = { text: 'Pro / Credits', style: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' };
                 }
 
                 return (
@@ -217,18 +165,16 @@ export default function ControlPanel({
 
         <div>
           <Label htmlFor="prompt">Prompt</Label>
-          <TextareaAutosize
-            id="prompt"
-            name="prompt"
-            placeholder="A beautiful landscape painting..."
-            className="mt-1 w-full resize-none rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            minRows={3}
-            maxRows={8}
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-          />
-          <div className="mt-2 flex items-center justify-between">
-              <PromptToolbar
+          <div className="relative">
+            <Textarea
+              id="prompt"
+              {...register("prompt")}
+              placeholder="A photo of a cute corgi"
+              className="pr-20"
+              rows={3}
+            />
+            <div className="absolute top-2 right-2">
+              <PromptToolbar 
                 onUndo={undoPrompt}
                 onRedo={redoPrompt}
                 onClear={() => {
@@ -239,9 +185,9 @@ export default function ControlPanel({
                 canUndo={canUndoPrompt}
                 canRedo={canRedoPrompt}
               />
-            {/* We can add style selector here later */}
+            </div>
           </div>
-          {errors?.prompt && <p className="text-sm text-red-500 mt-1">{errors.prompt[0]}</p>}
+          {errors?.prompt && <p className="text-sm text-red-500 mt-1">{errors.prompt.message}</p>}
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">
@@ -258,136 +204,80 @@ export default function ControlPanel({
             AI Improve
           </Button>
         </div>
-
-        <div>
-          <Label>Aspect ratio</Label>
-          <Select
-            value={`${width}x${height}`}
-            onValueChange={(value) => {
-              const [w, h] = value.split("x").map(Number);
-              setValue("width", w, { shouldDirty: true });
-              setValue("height", h, { shouldDirty: true });
-            }}
-          >
-            <SelectTrigger className="mt-2">
-              <SelectValue placeholder="Select an aspect ratio" />
-            </SelectTrigger>
-            <SelectContent>
-              {aspectRatios.map((r) => (
-                <SelectItem
-                  key={`${r.width}x${r.height}`}
-                  value={`${r.width}x${r.height}`}
-                >
-                  {r.label} ({r.width}px x {r.height}px)
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div>
-          <Label>Number of images</Label>
-          <ToggleGroup
-            type="single"
-            variant="outline"
-            className="mt-2 grid grid-cols-5 gap-2"
-            value={String(numImages)}
-            onValueChange={(value) => {
-              if (value) setValue("num_images", parseInt(value, 10));
-            }}
-          >
-            <TooltipProvider>
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => {
-                const isProOption = num > 2;
-                const isDisabled = isProOption && !isPro;
-
-                if (isDisabled) {
-                  return (
-                    <Tooltip key={num}>
-                      <TooltipTrigger asChild>
-                        <ToggleGroupItem
-                          value={String(num)}
-                          disabled={true}
-                          className="w-full flex items-center justify-center gap-1.5"
-                          aria-label={`Generate ${num} images`}
-                        >
-                           <Crown className="w-3 h-3 text-yellow-500" />
-                          <span>{num}</span>
-                        </ToggleGroupItem>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Pro subscription required</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  );
-                }
-
-                return (
-                  <ToggleGroupItem
-                    key={num}
-                    value={String(num)}
-                    className="w-full"
-                    aria-label={`Generate ${num} images`}
-                  >
-                    {num}
-                  </ToggleGroupItem>
-                );
-              })}
-            </TooltipProvider>
-          </ToggleGroup>
-        </div>
-
+        
         <Accordion type="single" collapsible className="w-full">
-          <AccordionItem value="advanced-settings">
-            <AccordionTrigger>Advanced settings</AccordionTrigger>
-            <AccordionContent className="space-y-6 pt-4">
-              <div>
-                <Label htmlFor="steps">Steps: {steps}</Label>
-                <Slider
-                  id="steps"
-                  min={10}
-                  max={50}
-                  step={1}
-                  value={[steps]}
-                  onValueChange={(value) => setValue("steps", value[0], { shouldDirty: true })}
-                />
-              </div>
+          <AccordionItem value="item-1">
+            <AccordionTrigger>Advanced Settings</AccordionTrigger>
+            <AccordionContent>
+              <div className="grid gap-6">
+                <div className="grid gap-3">
+                  <Label>Aspect Ratio</Label>
+                  <ToggleGroup
+                    type="single"
+                    defaultValue={`${width}x${height}`}
+                    onValueChange={(value) => {
+                      if (value) {
+                        const [w, h] = value.split("x").map(Number);
+                        setValue("width", w, { shouldDirty: true });
+                        setValue("height", h, { shouldDirty: true });
+                      }
+                    }}
+                    className="grid grid-cols-3 gap-2"
+                  >
+                    {aspectRatios.map(r => (
+                      <ToggleGroupItem key={r.label} value={`${r.width}x${r.height}`}>
+                        {r.label}
+                      </ToggleGroupItem>
+                    ))}
+                  </ToggleGroup>
+                </div>
 
-              <div>
-                <Label htmlFor="cfg">CFG Scale: {cfg}</Label>
-                <Slider
-                  id="cfg"
-                  min={1}
-                  max={10}
-                  step={0.5}
-                  value={[cfg]}
-                  onValueChange={(value) => setValue("cfg", value[0], { shouldDirty: true })}
-                />
+                <div className="grid gap-3">
+                  <Label htmlFor="steps">Steps: {steps}</Label>
+                  <Slider
+                    id="steps"
+                    min={10}
+                    max={50}
+                    step={1}
+                    value={[steps]}
+                    onValueChange={([val]) => setValue("steps", val, { shouldDirty: true })}
+                  />
+                </div>
+
+                <div className="grid gap-3">
+                  <Label htmlFor="cfg">CFG Scale: {cfg}</Label>
+                   <Slider
+                    id="cfg"
+                    min={1}
+                    max={10}
+                    step={0.5}
+                    value={[cfg]}
+                    onValueChange={([val]) => setValue("cfg", val, { shouldDirty: true })}
+                  />
+                </div>
+                
+                <div className="grid gap-3">
+                  <Label htmlFor="num_images">Number of images: {numImages}</Label>
+                  <Slider
+                    id="num_images"
+                    min={1}
+                    max={4}
+                    step={1}
+                    value={[numImages]}
+                    onValueChange={([val]) => setValue("num_images", val, { shouldDirty: true })}
+                  />
+                </div>
               </div>
             </AccordionContent>
           </AccordionItem>
         </Accordion>
 
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={handleApplyLastSettings}
-          disabled={!lastSuccessfulInputs || isPending}
-        >
-          Apply last settings
-        </Button>
-
-        <Button type="submit" className="w-full h-12" disabled={isPending}>
-          <div className="flex flex-col items-center">
-            <span>{isPending ? "Generating..." : buttonMainText}</span>
-            {buttonSubText && !isPending && <span className="text-xs font-normal opacity-75">{buttonSubText}</span>}
-          </div>
+        <Button type="submit" className="w-full" disabled={isPending}>
+          {isPending ? 'Generating...' : buttonMainText}
+          {buttonSubText && <span className="text-xs ml-2 opacity-80">({buttonSubText})</span>}
         </Button>
       </form>
-      <div className="mt-4 border-t pt-4">
-        <HistoryPanel history={history} onSelectHistory={handleSelectHistory} />
-      </div>
     </div>
   );
 }
+
