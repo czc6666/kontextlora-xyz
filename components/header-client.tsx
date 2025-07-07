@@ -148,10 +148,7 @@ const mainNavItems = [
 ];
 
 const userMenuItems = [
-    { label: "Home", href: "/dashboard", icon: <Home className="mr-2 h-4 w-4" /> },
-    { label: "My Favorites", href: "/dashboard/favorites", icon: <Heart className="mr-2 h-4 w-4" /> },
-    { label: "My Photos", href: "/dashboard/photos", icon: <ImageIcon className="mr-2 h-4 w-4" /> },
-    { label: "My Videos", href: "/dashboard/videos", icon: <Video className="mr-2 h-4 w-4" /> },
+    { label: "Dashboard", href: "/dashboard", icon: <Home className="mr-2 h-4 w-4" /> },
 ];
 
 function UserCredits({ credits }: { credits: number }) {
@@ -203,22 +200,13 @@ function UserNav({ user, credits }: { user: User; credits: number }) {
         <DropdownMenuSeparator />
         {userMenuItems.map((item) => (
           <DropdownMenuItem key={item.href} asChild>
-            <Link href={item.href} legacyBehavior passHref>
-              <a className="flex items-center">
-                {item.icon}
-                <span>{item.label}</span>
-              </a>
+            <Link href={item.href} className="flex items-center">
+              {item.icon}
+              <span>{item.label}</span>
             </Link>
           </DropdownMenuItem>
         ))}
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={() => alert("Delete Account feature is not implemented yet.")}
-          className="cursor-pointer text-red-500 focus:bg-red-50 focus:text-red-600"
-        >
-          <Trash2 className="mr-2 h-4 w-4" />
-          <span>Delete Account</span>
-        </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => signOutAction()}
           className="cursor-pointer"
@@ -265,38 +253,36 @@ export default function HeaderClient({ user, credits }: HeaderClientProps) {
   }, [user, supabase]);
 
   const CenterNav = () => (
-    <NavigationMenu className="hidden md:flex">
+    <NavigationMenu className="hidden lg:flex">
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuTrigger>Free Tools</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <div className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-              <div className="col-span-2 md:col-span-1">
-                <h3 className="mb-2 font-semibold text-foreground/80">Base Tools</h3>
-                <ul className="flex flex-col gap-3">
-                  {baseTools.map((tool) => (
+            <div className="grid w-[600px] grid-cols-2 gap-4 p-4">
+              <div className="flex flex-col">
+                <h3 className="mb-2 text-lg font-medium">AI Tools</h3>
+                <ul className="flex flex-col space-y-1">
+                  {aiTools.map((component) => (
                     <ListItem
-                      key={tool.title}
-                      title={tool.title}
-                      href={tool.href}
-                      icon={tool.icon}
+                      key={component.title}
+                      title={component.title}
+                      href={component.href}
                     >
-                      {tool.description}
+                      {component.description}
                     </ListItem>
                   ))}
                 </ul>
               </div>
-              <div className="col-span-2 md:col-span-1">
-                <h3 className="mb-2 font-semibold text-foreground/80">AI Tools</h3>
-                <ul className="flex flex-col gap-3">
-                  {aiTools.map((tool) => (
+              <div className="flex flex-col">
+                <h3 className="mb-2 text-lg font-medium">Base Tools</h3>
+                <ul className="flex flex-col space-y-1">
+                  {baseTools.map((component) => (
                     <ListItem
-                      key={tool.title}
-                      title={tool.title}
-                      href={tool.href}
-                      icon={tool.icon}
+                      key={component.title}
+                      title={component.title}
+                      href={component.href}
                     >
-                      {tool.description}
+                      {component.description}
                     </ListItem>
                   ))}
                 </ul>
@@ -306,7 +292,7 @@ export default function HeaderClient({ user, credits }: HeaderClientProps) {
         </NavigationMenuItem>
         {mainNavItems.map((item) => (
           <NavigationMenuItem key={item.href}>
-            <Link href={item.href} legacyBehavior passHref>
+            <Link href={item.href} passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                 {item.label}
               </NavigationMenuLink>

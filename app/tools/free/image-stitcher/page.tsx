@@ -11,11 +11,47 @@ import {
   PageHeaderHeading,
 } from "@/components/shared/page-header";
 import { Shell } from "@/components/shared/shell";
+import { HowItWorks } from '@/components/shared/how-it-works';
+import { KeyFeatures } from '@/components/shared/key-features';
+import { Move, Shield, Rows, Columns } from 'lucide-react';
 
 export const metadata = {
     title: 'Image Stitcher - Combine Images Online',
     description: 'Combine multiple images into one seamlessly with our Image Stitcher. Horizontal or vertical stitching. All processing is done in your browser, 100% private.',
 };
+
+const howItWorksSteps = [
+    {
+        title: "Upload Images",
+        description: "Select two or more images you want to combine."
+    },
+    {
+        title: "Arrange & Choose Direction",
+        description: "Drag to reorder your images and select either horizontal or vertical stitching."
+    },
+    {
+        title: "Download",
+        description: "Click \"Stitch\" and then \"Download\" to get your combined image as a single file."
+    }
+];
+
+const keyFeatures = [
+    {
+        Icon: Move,
+        title: "Drag & Drop Sorting",
+        description: "Easily reorder your images with a simple drag-and-drop interface to get the perfect sequence."
+    },
+    {
+        Icon: Columns,
+        title: "Flexible Alignment",
+        description: "Stitch images together side-by-side (horizontally) or on top of each other (vertically)."
+    },
+    {
+        Icon: Shield,
+        title: "Private Processing",
+        description: "Your images are stitched together right in your browser. No files are ever sent to a server."
+    }
+];
 
 const faqs = [
     {
@@ -48,6 +84,8 @@ const Page = () => {
             <div className="w-full max-w-4xl mx-auto">
                 <ImageStitcherClient />
             </div>
+            <HowItWorks steps={howItWorksSteps} />
+            <KeyFeatures features={keyFeatures} />
             <div className="mt-8 w-full max-w-3xl mx-auto">
                 <h2 className="text-2xl font-bold mb-4 text-center">Frequently Asked Questions</h2>
                 <Accordion type="single" collapsible className="w-full">

@@ -11,11 +11,47 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Shell } from "@/components/shared/shell";
+import { HowItWorks } from '@/components/shared/how-it-works';
+import { KeyFeatures } from '@/components/shared/key-features';
+import { Crop, Ratio, Shield } from 'lucide-react';
 
 export const metadata = {
   title: "Image Cropper",
   description: "Crop your images online for free.",
 };
+
+const howItWorksSteps = [
+    {
+        title: "Upload Image",
+        description: "Select the image you want to crop from your device."
+    },
+    {
+        title: "Adjust Crop Area",
+        description: "Drag and resize the selection box to frame the perfect part of your image."
+    },
+    {
+        title: "Download",
+        description: "Click the download button to save the cropped area as a new image."
+    }
+];
+
+const keyFeatures = [
+    {
+        Icon: Crop,
+        title: "Interactive Preview",
+        description: "Easily adjust the crop area with a live preview of the final result."
+    },
+    {
+        Icon: Ratio,
+        title: "Aspect Ratios",
+        description: "Lock the aspect ratio to common sizes like 16:9 for consistent framing."
+    },
+    {
+        Icon: Shield,
+        title: "Client-Side",
+        description: "Your original image is safe. All cropping is done in your browser, not on a server."
+    }
+];
 
 const faqs = [
   {
@@ -62,6 +98,8 @@ export default function ImageCropperPage() {
       <div className="w-full max-w-xl mx-auto">
         <ImageCropperClient />
       </div>
+      <HowItWorks steps={howItWorksSteps} />
+      <KeyFeatures features={keyFeatures} />
       <div className="mt-8 w-full max-w-3xl mx-auto">
         <h2 className="text-2xl font-bold mb-4 text-center">Frequently Asked Questions</h2>
         <Accordion type="single" collapsible>

@@ -7,8 +7,8 @@ export function createClient(cookieStore: ReturnType<typeof cookies>) {
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
     {
       cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value;
+        async get(name: string) {
+          return (await cookieStore).get(name)?.value;
         },
         set(name: string, value: string, options: CookieOptions) {
           try {

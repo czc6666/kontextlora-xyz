@@ -11,11 +11,47 @@ import {
   PageHeaderHeading,
 } from "@/components/shared/page-header";
 import { Shell } from "@/components/shared/shell";
+import { HowItWorks } from '@/components/shared/how-it-works';
+import { KeyFeatures } from '@/components/shared/key-features';
+import { Crop, Package, Shield } from 'lucide-react';
 
 export const metadata = {
     title: 'Multi-Size ICO Icon Generator',
     description: 'Convert your images into a professional Windows ICO file with multiple sizes built-in (16x16, 32x32, 48x48, 256x256).',
 };
+
+const howItWorksSteps = [
+    {
+        title: "Upload Image",
+        description: "Select any image file (JPG, PNG, etc.) to use as a source for your icon."
+    },
+    {
+        title: "Generate ICO",
+        description: "The tool automatically processes your image and prepares a multi-size ICO file."
+    },
+    {
+        title: "Download",
+        description: "Click the download button to save the professional .ico file to your computer."
+    }
+];
+
+const keyFeatures = [
+    {
+        Icon: Package,
+        title: "Multi-Size Package",
+        description: "Generates a single .ico file with standard sizes (16x16, 32x32, 48x48, 256x256) for perfect display everywhere."
+    },
+    {
+        Icon: Shield,
+        title: "Client-Side Conversion",
+        description: "All processing happens in your browser. Your images are never uploaded, ensuring your privacy."
+    },
+    {
+        Icon: Crop,
+        title: "Auto-Fit",
+        description: "Non-square images are automatically centered and resized to fit the square icon format."
+    }
+];
 
 const faqs = [
     {
@@ -44,6 +80,8 @@ const Page = () => {
             <div className="w-full max-w-xl mx-auto">
                 <IcoGeneratorClient />
             </div>
+            <HowItWorks steps={howItWorksSteps} />
+            <KeyFeatures features={keyFeatures} />
             <div className="mt-8 w-full max-w-3xl mx-auto">
                 <h2 className="text-2xl font-bold mb-4 text-center">Frequently Asked Questions</h2>
                 <Accordion type="single" collapsible className="w-full">

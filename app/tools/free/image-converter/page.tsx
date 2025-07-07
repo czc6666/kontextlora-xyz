@@ -11,11 +11,47 @@ import {
   PageHeaderHeading,
 } from "@/components/shared/page-header";
 import { Shell } from "@/components/shared/shell";
+import { HowItWorks } from '@/components/shared/how-it-works';
+import { KeyFeatures } from '@/components/shared/key-features';
+import { Shield, SlidersHorizontal, Zap } from 'lucide-react';
 
 export const metadata = {
   title: 'Image Format Converter - Convert to WEBP, PNG, JPEG',
   description: 'Free online tool to convert your images to modern formats like WEBP, PNG, or JPEG. Works entirely in your browser, ensuring privacy and speed.',
 };
+
+const howItWorksSteps = [
+    {
+        title: "Upload Image",
+        description: "Select any image file you want to convert."
+    },
+    {
+        title: "Choose Format",
+        description: "Select the target format (WEBP, PNG, or JPEG) and adjust quality if applicable."
+    },
+    {
+        title: "Download",
+        description: "Click \"Convert & Download\" to get your new image in the desired format."
+    }
+];
+
+const keyFeatures = [
+    {
+        Icon: Zap,
+        title: "Modern Formats",
+        description: "Convert to next-gen formats like WEBP for better web performance, or stick with universal formats like PNG and JPEG."
+    },
+    {
+        Icon: SlidersHorizontal,
+        title: "Quality Options",
+        description: "Adjust the quality for WEBP and JPEG to perfectly balance file size and visual clarity."
+    },
+    {
+        Icon: Shield,
+        title: "Secure & Private",
+        description: "All conversion is done in your browser. Your files are never uploaded to a server."
+    }
+];
 
 const faqs = [
     {
@@ -56,6 +92,8 @@ const Page = () => {
             <div className="w-full max-w-xl mx-auto">
                 <ImageConverterClient />
             </div>
+            <HowItWorks steps={howItWorksSteps} />
+            <KeyFeatures features={keyFeatures} />
             <div className="mt-8 w-full max-w-3xl mx-auto">
                 <h2 className="text-2xl font-bold mb-4 text-center">Frequently Asked Questions</h2>
                 <Accordion type="single" collapsible className="w-full">

@@ -6,11 +6,47 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion"
+import { HowItWorks } from '@/components/shared/how-it-works';
+import { KeyFeatures } from '@/components/shared/key-features';
+import { Eye, Shield, Wand } from 'lucide-react';
 
 export const metadata = {
     title: 'Online Image Filters - Add Effects to Photos for Free',
     description: 'Apply various artistic filters to your photos for free, such as grayscale, sepia, brightness, contrast, and blur. Real-time preview and easy adjustments.',
 };
+
+const howItWorksSteps = [
+    {
+        title: "Upload Image",
+        description: "Select the photo you want to apply filters to."
+    },
+    {
+        title: "Apply Filters",
+        description: "Use the sliders to adjust grayscale, sepia, brightness, contrast, and more to achieve your desired look."
+    },
+    {
+        title: "Download",
+        description: "Save your newly styled image with a single click."
+    }
+];
+
+const keyFeatures = [
+    {
+        Icon: Eye,
+        title: "Real-Time Preview",
+        description: "See the effects of your filter adjustments instantly on your image."
+    },
+    {
+        Icon: Wand,
+        title: "Creative Control",
+        description: "Combine multiple filters to create unique looks and styles for your photos."
+    },
+    {
+        Icon: Shield,
+        title: "Completely Private",
+        description: "All filtering happens in your browser, so your images are never uploaded to a server."
+    }
+];
 
 const faqs = [
     {
@@ -47,10 +83,13 @@ const Page = () => {
                 <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Apply artistic filters to your photos for free, such as grayscale, sepia, brightness, and blur.</p>
             </header>
             
-            <div className="w-full max-w-xl mx-auto">
+            <div className="w-full max-w-5xl mx-auto">
                 <ImageFiltererClient />
             </div>
             
+            <HowItWorks steps={howItWorksSteps} />
+            <KeyFeatures features={keyFeatures} />
+
             <section className="mt-16 max-w-3xl mx-auto">
                 <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center">Frequently Asked Questions</h2>
                 <Accordion type="single" collapsible className="w-full">

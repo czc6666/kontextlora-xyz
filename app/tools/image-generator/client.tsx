@@ -1,108 +1,78 @@
 "use client";
 
-import { useState } from "react";
+import { useState } from 'react';
 import type { User } from "@supabase/supabase-js";
-import { z } from "zod";
-import { generateSchema } from "@/lib/schemas";
 import { ControlPanel } from "@/components/tools/image-generator/control-panel";
 import ResultPanel from "@/components/tools/image-generator/result-panel";
-import type { HistoryItem } from "@/components/tools/image-generator/history-item-type";
+import { ChevronRight } from "lucide-react";
+import Link from "next/link";
+import { generateImageAction } from './actions';
+import { z } from 'zod';
+
+const falSchema = z.object({
+  prompt: z.string().min(1, { message: "Prompt cannot be empty." }),
+  image_size: z.string(),
+  model: z.string(),
+});
+
+type FalFormValues = z.infer<typeof falSchema>;
 
 interface ImageGeneratorClientProps {
   user: User | null;
-  generateImageAction: (prevState: any, formData: FormData) => Promise<{
-      errors: Record<string, string[] | undefined> | null;
-      imageUrl: string | null;
-      message?: string;
-  }>;
   initialIsPro: boolean;
   initialCredits: number;
 }
 
 export function ImageGeneratorClient({ 
   user, 
-  generateImageAction,
   initialIsPro,
   initialCredits,
 }: ImageGeneratorClientProps) {
-  const [history, setHistory] = useState<HistoryItem[]>([]);
   const [isPending, setIsPending] = useState(false);
-  const [highlightedHistoryId, setHighlightedHistoryId] = useState<number | null>(null);
+  const [images, setImages] = useState<string[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
-  const onSubmit = async (values: z.infer<typeof generateSchema>) => {
+  const onSubmit = async (values: FalFormValues) => {
     setIsPending(true);
+    setImages([]);
+    setError(null);
 
-    const newHistoryId = Date.now();
-    const newHistoryItem: HistoryItem = {
-      id: newHistoryId,
-      status: 'loading',
-      message: "",
-      errors: null,
-      imageUrls: [],
-      inputs: values,
-    };
+    const formData = new FormData();
+    Object.entries(values).forEach(([key, value]) => {
+      formData.append(key, String(value));
+    });
 
-    setHistory(prev => [newHistoryItem, ...prev]);
+    const result = await generateImageAction(null, formData);
 
-    try {
-      const formData = new FormData();
-      Object.entries(values).forEach(([key, value]) => {
-        formData.append(key, String(value));
-      });
-      
-      const result = await generateImageAction(null, formData);
-      
-      if (result.errors || !result.imageUrl) {
-        setHistory(prev => prev.map(item => 
-          item.id === newHistoryId 
-          ? { ...item, status: 'error', errors: result.errors, message: result.message || "Generation failed" } 
-          : item
-        ));
-        return;
-      }
-      
-      setHistory(prev => prev.map(item => 
-        item.id === newHistoryId 
-        ? { ...item, status: 'success', imageUrls: [result.imageUrl as string] } 
-        : item
-      ));
-
-    } catch (error) {
-      console.error("Image generation process failed:", error);
-       setHistory(prev => prev.map(item => 
-        item.id === newHistoryId 
-        ? { ...item, status: 'error', message: "An unexpected error occurred." } 
-        : item
-      ));
-    } finally {
-      setIsPending(false);
+    if (result.imageUrls) {
+      setImages(result.imageUrls);
+    } else {
+      setError(result.message || "An unknown error occurred.");
     }
-  };
 
-  const handleSelectHistory = (item: HistoryItem) => {
-    setHighlightedHistoryId(item.id);
-    setTimeout(() => setHighlightedHistoryId(null), 1000);
+    setIsPending(false);
   };
-
-  const activeGeneration = history.find(h => h.status === 'loading' || h.status === 'success');
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
+      <div className="mb-6">
+        <div className="flex items-center text-sm text-muted-foreground">
+          <Link href="/" className="hover:text-primary">Home</Link>
+          <ChevronRight className="h-4 w-4 mx-1" />
+          <span>Lora AI Image Generator</span>
+        </div>
+      </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-1">
           <ControlPanel
             user={user}
+            isPro={initialIsPro}
             isPending={isPending}
             onSubmit={onSubmit}
-            isPro={initialIsPro}
-            credits={initialCredits}
           />
         </div>
         <div className="lg:col-span-2 space-y-8">
-          <ResultPanel
-            history={history}
-            highlightedHistoryId={highlightedHistoryId}
-          />
+          <ResultPanel images={images} error={error} isPending={isPending} />
         </div>
       </div>
     </div>

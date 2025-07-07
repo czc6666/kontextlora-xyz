@@ -11,11 +11,47 @@ import {
   PageHeaderHeading,
 } from "@/components/shared/page-header";
 import { Shell } from "@/components/shared/shell";
+import { HowItWorks } from '@/components/shared/how-it-works';
+import { KeyFeatures } from '@/components/shared/key-features';
+import { CheckCircle, Search, Shield } from 'lucide-react';
 
 export const metadata = {
     title: 'EXIF Data Remover - Protect Your Privacy',
     description: 'View and remove hidden metadata (EXIF) from your photos to protect your privacy. Works with JPEG files, 100% free and client-side.',
 };
+
+const howItWorksSteps = [
+    {
+        title: "Select Image",
+        description: "Upload your JPG/JPEG file. The tool will instantly read and display any found EXIF data."
+    },
+    {
+        title: "Review Data",
+        description: "Check the metadata that was extracted from your photo, such as camera model, date, and location."
+    },
+    {
+        title: "Download Clean Image",
+        description: "Click \"Download Clean Image\". A new version of your photo without any EXIF data will be saved to your device."
+    }
+];
+
+const keyFeatures = [
+    {
+        Icon: Shield,
+        title: "Privacy First",
+        description: "Your images are never uploaded. All EXIF data processing is done in your browser, ensuring your data remains 100% private."
+    },
+    {
+        Icon: Search,
+        title: "Instant Analysis",
+        description: "See what hidden data your photos contain the moment you upload them."
+    },
+    {
+        Icon: CheckCircle,
+        title: "No Quality Loss",
+        description: "The tool creates a new image file with only the visual data, preserving the original quality while stripping metadata."
+    }
+];
 
 const faqs = [
     {
@@ -56,6 +92,8 @@ const Page = () => {
             <div className="w-full max-w-xl mx-auto">
                 <ExifRemoverClient />
             </div>
+            <HowItWorks steps={howItWorksSteps} />
+            <KeyFeatures features={keyFeatures} />
             <div className="mt-8 w-full max-w-3xl mx-auto">
                 <h2 className="text-2xl font-bold mb-4 text-center">Frequently Asked Questions</h2>
                 <Accordion type="single" collapsible className="w-full">

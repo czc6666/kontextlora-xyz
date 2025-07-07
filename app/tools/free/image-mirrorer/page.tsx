@@ -11,12 +11,48 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion"
+import { HowItWorks } from '@/components/shared/how-it-works';
+import { KeyFeatures } from '@/components/shared/key-features';
+import { CheckCircle, FlipHorizontal, Shield } from 'lucide-react';
 
 
 export const metadata = {
   title: 'Image Mirrorer - Flip Your Images Online',
   description: 'Create a horizontal or vertical mirror image with one click. Free, fast, and secure, right in your browser.',
 };
+
+const howItWorksSteps = [
+    {
+        title: "Upload Image",
+        description: "Select the photo you want to mirror or flip."
+    },
+    {
+        title: "Flip Image",
+        description: "Click the \"Mirror Horizontally\" or \"Mirror Vertically\" buttons to flip the image."
+    },
+    {
+        title: "Download",
+        description: "Save your newly mirrored image instantly with a single click."
+    }
+];
+
+const keyFeatures = [
+    {
+        Icon: FlipHorizontal,
+        title: "One-Click Flip",
+        description: "Instantly mirror your images either horizontally or vertically with a single click."
+    },
+    {
+        Icon: CheckCircle,
+        title: "Lossless Operation",
+        description: "Mirroring an image is a lossless operation that does not affect your image's quality."
+    },
+    {
+        Icon: Shield,
+        title: "Browser-Based",
+        description: "Your images are processed securely in your browser and are never uploaded to a server."
+    }
+];
 
 const faqs = [
     {
@@ -54,9 +90,11 @@ export default function ImageMirrorerPage() {
                     Create a horizontal or vertical mirror image with one click.
                 </PageHeaderDescription>
             </PageHeader>
-            <div className="w-full max-w-xl mx-auto">
+            <div className="w-full max-w-4xl mx-auto">
                 <ImageMirrorerClient />
             </div>
+            <HowItWorks steps={howItWorksSteps} />
+            <KeyFeatures features={keyFeatures} />
             <div className="mt-8 w-full max-w-3xl mx-auto">
                 <h2 className="text-2xl font-bold mb-4 text-center">Frequently Asked Questions</h2>
                  <Accordion type="single" collapsible className="w-full">

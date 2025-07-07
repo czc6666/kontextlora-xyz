@@ -11,11 +11,47 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Shell } from "@/components/shared/shell";
+import { HowItWorks } from '@/components/shared/how-it-works';
+import { KeyFeatures } from '@/components/shared/key-features';
+import { Lock, Maximize, Shield } from 'lucide-react';
 
 export const metadata = {
   title: "Image Resizer",
   description: "Resize your images online to the exact dimensions you need.",
 };
+
+const howItWorksSteps = [
+    {
+        title: "Upload Image",
+        description: "Select the image you want to resize from your device."
+    },
+    {
+        title: "Set Dimensions",
+        description: "Enter your desired width or height. Lock the aspect ratio to maintain proportions automatically."
+    },
+    {
+        title: "Download",
+        description: "Click \"Resize\" and then \"Download\" to save your newly resized image."
+    }
+];
+
+const keyFeatures = [
+    {
+        Icon: Lock,
+        title: "Aspect Ratio Lock",
+        description: "Maintain your image's original proportions with one click to avoid distortion."
+    },
+    {
+        Icon: Maximize,
+        title: "Pixel Perfect",
+        description: "Resize images to exact pixel dimensions for any use case, from social media to printing."
+    },
+    {
+        Icon: Shield,
+        title: "Safe and Secure",
+        description: "All resizing is done in your browser, not on a server, ensuring your images remain private."
+    }
+];
 
 const faqs = [
   {
@@ -63,6 +99,8 @@ export default function ImageResizerPage() {
       <div className="w-full max-w-xl mx-auto">
         <ImageResizerClient />
       </div>
+      <HowItWorks steps={howItWorksSteps} />
+      <KeyFeatures features={keyFeatures} />
       <div className="mt-8 w-full max-w-3xl mx-auto">
         <h2 className="text-2xl font-bold mb-4 text-center">Frequently Asked Questions</h2>
         <Accordion type="single" collapsible>
